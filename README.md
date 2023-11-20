@@ -1,10 +1,9 @@
-## simple drag cursor utility
+## minni, a minimal cursor utility
 
 ```ts
 import {minni} from "@bigmistqke/minni"
 
-
-const mouseDownHandler = async (e) => {
+const mouseDownHandler = async (e: MouseEvent) => {
   console.log('start dragging')
   const delta = await minni(e, (delta) => {
     ...
@@ -12,7 +11,7 @@ const mouseDownHandler = async (e) => {
   console.log('finished dragging:', delta)
 }
 
-const touchStartHandler = async (e) => {
+const touchStartHandler = async (e: TouchEvent) => {
   console.log('start dragging')
   const delta = await minni(e, (delta) => {
     ...
