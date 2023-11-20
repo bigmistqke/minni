@@ -1,4 +1,4 @@
-## 🐭 minni, a minimal cursor utility
+## 🐭 minni, a minimal drag utility
 
 ```ts
 import {minni} from "@bigmistqke/minni"
