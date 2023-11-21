@@ -1,6 +1,12 @@
-export const minni = <TEvent extends MouseEvent | TouchEvent>(
+type CustomMouseEvent = { clientX: number; clientY: number };
+type CustomTouchEvent = { touches: TouchList };
+
+export const minni = <TEvent extends CustomMouseEvent | CustomTouchEvent>(
   event: TEvent,
-  callback?: (delta: { x: number; y: number }, event: TEvent) => {},
+  callback?: (
+    delta: { x: number; y: number },
+    event: TEvent extends CustomTouchEvent ? TouchEvent : MouseEvent,
+  ) => {},
 ) =>
   new Promise<{ x: number; y: number }>((resolve) => {
     if ('touches' in event) {
@@ -14,7 +20,7 @@ export const minni = <TEvent extends MouseEvent | TouchEvent>(
         y: start.y - event.touches[0].clientY,
       });
 
-      const move = (event: TouchEvent) => callback?.(getDelta(event), event as TEvent);
+      const move = (event: TouchEvent) => callback?.(getDelta(event), event as any);
       const end = (event: TouchEvent) => {
         window.removeEventListener('touchmove', move);
         window.removeEventListener('touchend', end);
@@ -34,7 +40,7 @@ export const minni = <TEvent extends MouseEvent | TouchEvent>(
         y: start.y - event.clientY,
       });
 
-      const move = (event: MouseEvent) => callback?.(getDelta(event), event as TEvent);
+      const move = (event: MouseEvent) => callback?.(getDelta(event), event as any);
       const end = (event: MouseEvent) => {
         window.removeEventListener('mousemove', move);
         window.removeEventListener('mouseup', end);

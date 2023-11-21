@@ -1,7 +1,14 @@
-declare const minni: <TEvent extends MouseEvent | TouchEvent>(event: TEvent, callback?: ((delta: {
+type CustomMouseEvent = {
+    clientX: number;
+    clientY: number;
+};
+type CustomTouchEvent = {
+    touches: TouchList;
+};
+declare const minni: <TEvent extends CustomMouseEvent | CustomTouchEvent>(event: TEvent, callback?: ((delta: {
     x: number;
     y: number;
-}, event: TEvent) => {}) | undefined) => Promise<{
+}, event: TEvent extends CustomTouchEvent ? TouchEvent : MouseEvent) => {}) | undefined) => Promise<{
     x: number;
     y: number;
 }>;
