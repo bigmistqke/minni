@@ -1,11 +1,12 @@
 {
   "name": "@bigmistqke/minni",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "minimal drag utility",
   "author": "bigmistqke",
   "license": "MIT",
   "url": "https://github.com/bigmistqke/minni",
   "scripts": {
+    "bump": "bumpp",
     "ts-types": "tsc",
     "build:dev": "rimraf lib && tsup --watch",
     "build:prod": "rimraf dist && env NODE_ENV=production tsup",
@@ -26,6 +27,7 @@
   "types": "dist/index.d.ts",
   "type": "module",
   "dependencies": {
+    "bumpp": "^10.4.1",
     "typescript": "^4.7.2"
   },
   "files": [
