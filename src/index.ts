@@ -1,53 +1,49 @@
-type CustomMouseEvent = { clientX: number; clientY: number };
-type CustomTouchEvent = { touches: TouchList };
+const isTouch = (event: any): event is TouchEvent => event instanceof TouchEvent;
+const isPointer = (event: any): event is PointerEvent => event instanceof PointerEvent;
 
-export const minni = <TEvent extends CustomMouseEvent | CustomTouchEvent>(
+export const minni = <TEvent extends TouchEvent | PointerEvent | MouseEvent>(
   event: TEvent,
-  callback?: (
-    delta: { x: number; y: number },
-    event: TEvent extends CustomTouchEvent ? TouchEvent : MouseEvent,
-  ) => {},
+  callback?: (delta: { x: number; y: number }, event: TEvent) => {},
 ) =>
   new Promise<{ x: number; y: number }>((resolve) => {
-    if ('touches' in event) {
-      const start = {
-        x: event.touches[0].clientX,
-        y: event.touches[0].clientY,
-      };
+    const start = isTouch(event)
+      ? { x: event.touches[0].clientX, y: event.touches[0].clientY }
+      : { x: event.clientX, y: event.clientY };
 
-      const getDelta = (event: TouchEvent) => ({
-        x: event.touches[0].clientX - start.x,
-        y: start.y - event.touches[0].clientY,
-      });
+    const [moveType, endType]: [string, string] = isTouch(event as Event)
+      ? ['touchmove', 'touchend']
+      : isPointer(event as Event)
+      ? ['pointermove', 'pointerup']
+      : ['mousemove', 'mouseup'];
 
-      const move = (event: TouchEvent) => callback?.(getDelta(event), event as any);
-      const end = (event: TouchEvent) => {
-        window.removeEventListener('touchmove', move);
-        window.removeEventListener('touchend', end);
-        resolve(getDelta(event));
-      };
+    const getPosition = (event: Event) =>
+      isTouch(event)
+        ? { x: event.touches[0].clientX, y: event.touches[0].clientY }
+        : { x: (event as MouseEvent).clientX, y: (event as MouseEvent).clientY };
 
-      window.addEventListener('touchmove', move);
-      window.addEventListener('touchend', end);
-    } else {
-      const start = {
-        x: event.clientX,
-        y: event.clientY,
-      };
+    const getDelta = (event: Event) => {
+      const pos = getPosition(event);
+      return { x: pos.x - start.x, y: start.y - pos.y };
+    };
 
-      const getDelta = (event: MouseEvent) => ({
-        x: event.clientX - start.x,
-        y: start.y - event.clientY,
-      });
+    const controller = new AbortController();
+    const { signal } = controller;
 
-      const move = (event: MouseEvent) => callback?.(getDelta(event), event as any);
-      const end = (event: MouseEvent) => {
-        window.removeEventListener('mousemove', move);
-        window.removeEventListener('mouseup', end);
-        resolve(getDelta(event));
-      };
-
-      window.addEventListener('mousemove', move);
-      window.addEventListener('mouseup', end);
+    if (callback) {
+      window.addEventListener(
+        moveType,
+        (event: Event) => {
+          callback(getDelta(event), event as any);
+        },
+        { signal },
+      );
     }
+    window.addEventListener(
+      endType,
+      (event: Event) => {
+        controller.abort();
+        resolve(getDelta(event));
+      },
+      { signal },
+    );
   });
