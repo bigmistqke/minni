@@ -7,13 +7,14 @@
   "url": "https://github.com/bigmistqke/minni",
   "scripts": {
     "bump": "bumpp",
-    "ts-types": "tsc",
+    "types": "tsc --no-emit",
     "build:dev": "rimraf lib && tsup --watch",
     "build:prod": "rimraf dist && env NODE_ENV=production tsup",
     "build:watch": "tsup --watch",
     "lint:fix": "eslint ./src --ext .ts,.tsx --quiet --fix --ignore-path ./.gitignore",
     "lint:format": "prettier  --loglevel warn --write \"./**/*.{ts,tsx,css,md,json}\" ",
-    "lint": "yarn lint:format && yarn lint:fix "
+    "lint": "yarn lint:format && yarn lint:fix",
+    "prepublish": "pnpm build:prod"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.27.0",

@@ -3,7 +3,7 @@ const isPointer = (event: any): event is PointerEvent => event instanceof Pointe
 
 export const minni = <TEvent extends TouchEvent | PointerEvent | MouseEvent>(
   event: TEvent,
-  callback?: (delta: { x: number; y: number }, event: TEvent) => {},
+  callback?: (delta: { x: number; y: number }, event: TEvent) => void,
 ) =>
   new Promise<{ x: number; y: number }>((resolve) => {
     const start = isTouch(event)
@@ -19,7 +19,10 @@ export const minni = <TEvent extends TouchEvent | PointerEvent | MouseEvent>(
     const getPosition = (event: Event) =>
       isTouch(event)
         ? { x: event.touches[0].clientX, y: event.touches[0].clientY }
-        : { x: (event as MouseEvent).clientX, y: (event as MouseEvent).clientY };
+        : {
+            x: (event as MouseEvent).clientX,
+            y: (event as MouseEvent).clientY,
+          };
 
     const getDelta = (event: Event) => {
       const pos = getPosition(event);
