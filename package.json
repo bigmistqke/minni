@@ -2,19 +2,23 @@
   "name": "@bigmistqke/minni",
   "version": "0.0.9",
   "description": "minimal drag utility",
+  "type": "module",
   "author": "bigmistqke",
   "license": "MIT",
   "url": "https://github.com/bigmistqke/minni",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
+    "build": "rimraf dist && tsup",
     "bump": "bumpp",
-    "types": "tsc --no-emit",
-    "build:dev": "rimraf lib && tsup --watch",
-    "build:prod": "rimraf dist && env NODE_ENV=production tsup",
-    "build:watch": "tsup --watch",
-    "lint:fix": "eslint ./src --ext .ts,.tsx --quiet --fix --ignore-path ./.gitignore",
-    "lint:format": "prettier  --loglevel warn --write \"./**/*.{ts,tsx,css,md,json}\" ",
-    "lint": "yarn lint:format && yarn lint:fix",
-    "prepublish": "pnpm build:prod"
+    "lint": "prettier  --loglevel warn --write \"./**/*.{ts,tsx,css,md,json}\" ",
+    "prepublish": "pnpm build",
+    "types": "tsc --no-emit"
+  },
+  "dependencies": {
+    "bumpp": "^10.4.1",
+    "typescript": "^4.7.2"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.27.0",
@@ -22,14 +26,6 @@
     "prettier": "^2.6.2",
     "rimraf": "^3.0.2",
     "tsup": "^6.0.1"
-  },
-  "main": "dist/index.cjs",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "type": "module",
-  "dependencies": {
-    "bumpp": "^10.4.1",
-    "typescript": "^4.7.2"
   },
   "files": [
     "lib",
