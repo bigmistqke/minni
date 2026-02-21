@@ -1,19 +1,17 @@
-import type { Options } from 'tsup'
-
-const env = process.env.NODE_ENV
+import type { Options } from 'tsup';
 
 export const tsup: Options = {
   splitting: true,
-  sourcemap: env === 'prod', // source map is only available in prod
-  clean: true, // rimraf disr
-  dts: true, // generate dts file for main module
-  format: ['cjs', 'esm'], // generate cjs and esm files
-  minify: env === 'production',
-  bundle: env === 'production',
+  sourcemap: true,
+  clean: true,
+  dts: true,
+  format: ['esm'],
+  minify: true,
+  bundle: true,
   skipNodeModulesBundle: true,
   entryPoints: ['src/index.ts'],
-  watch: env === 'development',
+  watch: false,
   target: 'es2020',
-  outDir: env === 'production' ? 'dist' : 'lib',
-  entry: ['src/**/*.ts'],
-}
+  outDir: 'dist',
+  entry: ['src/index.ts'],
+};
