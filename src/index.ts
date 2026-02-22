@@ -38,7 +38,7 @@ export const minni = <TEvent extends TouchEvent | PointerEvent | MouseEvent>(
         (event: Event) => {
           callback(getDelta(event), event as any);
         },
-        { signal },
+        { signal, capture: true },
       );
     }
     window.addEventListener(
@@ -47,6 +47,6 @@ export const minni = <TEvent extends TouchEvent | PointerEvent | MouseEvent>(
         controller.abort();
         resolve(getDelta(event));
       },
-      { signal },
+      { signal, capture: true },
     );
   });
